@@ -7,6 +7,7 @@
 # Or clone first, then run:
 #   git clone https://github.com/YOUR_USER/dotfiles.git ~/dotfiles
 #   cd ~/dotfiles && bash bootstrap.sh
+#
 
 set -euo pipefail
 
