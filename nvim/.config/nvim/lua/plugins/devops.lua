@@ -5,6 +5,23 @@ return {
   { import = "lazyvim.plugins.extras.lang.yaml" },
   { import = "lazyvim.plugins.extras.lang.docker" },
 
+  -- 1b. Go tooling — provides :GoFillStruct, :GoIfErr, :GoAddTag, etc.
+  {
+    "ray-x/go.nvim",
+    dependencies = {
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("go").setup({
+        lsp_cfg = false, -- LazyVim Go extra already configures gopls
+      })
+    end,
+    ft = { "go", "gomod" },
+    build = ':lua require("go.install").update_all_sync()',
+  },
+
   -- 2. Configure YAML to use Kubernetes schemas
   {
     "neovim/nvim-lspconfig",

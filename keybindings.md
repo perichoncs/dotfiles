@@ -11,12 +11,16 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Super | Open app launcher |
 | Super + Q | Close window |
 | Super + M | Maximize/restore window |
-| Super + Arrow keys | Tile window to half of screen |
+| Super + h | Tile window to left half |
+| Super + j | Tile window to bottom half |
+| Super + k | Tile window to top half |
+| Super + l | Tile window to right half |
 | Super + 1-9 | Switch to workspace |
 | Super + Shift + 1-9 | Move window to workspace |
 | Super + T | Open terminal |
 | Super + Tab | App switcher |
 
+> **Note:** By default, Cosmic uses `Super + h/j/k/l` (and arrow keys) to **switch between windows**. These are rebound here for **tiling** (snapping windows to screen halves). Configure in Cosmic Settings → Keyboard → Shortcuts → Tiling.
 > Super key never reaches the terminal — zero conflict with tmux or Neovim.
 
 ---
@@ -61,14 +65,17 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Ctrl-Space, $ | Rename current session |
 | Ctrl-Space, d | Detach from session |
 
-### Copy Mode (vi-style)
+### Copy Mode (vi-style) — copies to system clipboard via xclip
 
 | Keybinding | Action |
 |---|---|
 | Ctrl-Space, [ | Enter copy mode |
-| v (in copy mode) | Begin selection |
-| y (in copy mode) | Copy selection to clipboard |
-| q (in copy mode) | Exit copy mode |
+| v (in copy mode) | Begin visual selection |
+| V (in copy mode) | Begin line selection |
+| y (in copy mode) | Yank selection → system clipboard, exit copy mode |
+| q (in copy mode) | Exit copy mode without copying |
+| / (in copy mode) | Search forward |
+| ? (in copy mode) | Search backward |
 
 ### Misc
 
@@ -134,6 +141,33 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Space c d | Line diagnostics |
 | [ d / ] d | Previous/next diagnostic |
 
+### Go Commands (via go.nvim — available in Go files)
+
+| Command | Action |
+|---|---|
+| :GoFillStruct | Fill struct fields with zero values |
+| :GoIfErr | Generate `if err != nil` block |
+| :GoAddTag json | Add JSON struct tags |
+| :GoRmTag json | Remove JSON struct tags |
+| :GoImpl | Generate interface implementation |
+| :GoTest | Run tests for current file |
+| :GoTestFunc | Run test under cursor |
+
+### Copy & Paste — system clipboard (LazyVim sets clipboard=unnamedplus)
+
+| Keybinding | Action |
+|---|---|
+| y | Yank (copy) motion/selection → system clipboard |
+| yy | Yank entire line → system clipboard |
+| p | Paste after cursor (from system clipboard) |
+| P | Paste before cursor (from system clipboard) |
+| Visual + y | Select text then yank → system clipboard |
+| "+y | Explicit yank to system clipboard (same effect) |
+| Ctrl-Shift-V | Paste from system clipboard (terminal passthrough) |
+
+> **Note:** LazyVim sets `clipboard = "unnamedplus"` by default, so every yank/put
+> in Neovim automatically uses the system clipboard. No `"+` prefix needed.
+
 ### Save & Quit
 
 | Keybinding | Action |
@@ -169,15 +203,36 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 ## Key Layering Summary
 
 ```
-┌──────────────────────────────────────────────┐
-│  Cosmic DE      →  Super + ...               │
-│  tmux           →  Ctrl-Space + ...          │
-│  Neovim/LazyVim →  Space + ...               │
-│  Shared         →  Ctrl-h/j/k/l (navigator)  │
-└──────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  Cosmic DE      →  Super + ...                               │
+│    Tiling       →  Super + h/j/k/l  (custom, replaces arrows)│
+│  tmux           →  Ctrl-Space + ...                          │
+│  Neovim/LazyVim →  Space + ...                               │
+│  Shared         →  Ctrl-h/j/k/l (navigator)                  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 No layer conflicts with this setup.
+
+---
+
+## Clipboard Integration Summary
+
+Everything is wired to the **system clipboard** — copy in one tool, paste in any other.
+
+| Context | Copy | Paste |
+|---|---|---|
+| **Neovim** | `y` (yank) | `p` / `P` |
+| **tmux copy mode** | `v` to select → `y` to yank | `Ctrl-Shift-V` (terminal) |
+| **Terminal** | Select with mouse (if enabled) | `Ctrl-Shift-V` |
+| **Any app → Neovim** | `Ctrl-C` / system copy | `p` in Normal, `Ctrl-Shift-V` in Insert |
+| **Neovim → Any app** | `y` in Neovim | `Ctrl-V` / system paste |
+| **tmux → Any app** | `y` in copy mode | `Ctrl-V` / system paste |
+
+> **How it works:**
+> - Neovim: `clipboard = "unnamedplus"` syncs all yanks with the system clipboard.
+> - tmux: `y` in copy mode pipes to `xclip -selection clipboard`.
+> - Both read/write the same X11 clipboard — full interop.
 
 ---
 
