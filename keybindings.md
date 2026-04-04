@@ -141,17 +141,57 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Space c d | Line diagnostics |
 | [ d / ] d | Previous/next diagnostic |
 
-### Go Commands (via go.nvim — available in Go files)
+### Go Tooling (Space c g — only in Go files)
 
-| Command | Action |
+| Keybinding | Command | Action |
+|---|---|---|
+| Space c g s | :GoFillStruct | Fill struct fields with zero values |
+| Space c g e | :GoIfErr | Generate `if err != nil` block |
+| Space c g a | :GoAddTag | Add struct tags (json by default) |
+| Space c g r | :GoRmTag | Remove struct tags |
+| Space c g i | :GoImpl | Generate interface implementation stubs |
+| Space c g f | :GoTestFunc | Run test under cursor |
+| Space c g p | :GoTest | Run tests for entire package |
+
+> **Mnemonic:** `c` = code, `g` = go, then: `s`truct, `e`rr, `a`dd tag, `r`emove tag, `i`mpl, `f`unc test, `p`ackage test.
+
+### Debugging (Space d — via nvim-dap + delve)
+
+| Keybinding | Action |
 |---|---|
-| :GoFillStruct | Fill struct fields with zero values |
-| :GoIfErr | Generate `if err != nil` block |
-| :GoAddTag json | Add JSON struct tags |
-| :GoRmTag json | Remove JSON struct tags |
-| :GoImpl | Generate interface implementation |
-| :GoTest | Run tests for current file |
-| :GoTestFunc | Run test under cursor |
+| Space d b | Toggle breakpoint on current line |
+| Space d B | Set conditional breakpoint (prompts for expression) |
+| Space d c | Start / Continue execution |
+| Space d C | Run to cursor |
+| Space d i | Step into function |
+| Space d o | Step out of function |
+| Space d O | Step over (next line) |
+| Space d P | Pause execution |
+| Space d t | Terminate debug session |
+| Space d r | Toggle REPL |
+| Space d u | Toggle DAP UI (variables, stack, breakpoints) |
+| Space d e | Evaluate expression under cursor |
+| Space d l | Re-run last debug session |
+| Space d a | Run with arguments (prompts for args) |
+| Space d w | Show debug widgets |
+
+> **Quick start:** Place cursor on a Go `func Test...`, press `Space d b` to set a breakpoint,
+> then `Space d c` to start debugging. Use `Space d i/o/O` to step through code.
+> `Space d u` opens the full DAP UI with variable inspection.
+
+### Testing (Space t — via neotest)
+
+| Keybinding | Action |
+|---|---|
+| Space t r | Run nearest test |
+| Space t t | Run all tests in file |
+| Space t T | Run all test files in project |
+| Space t l | Re-run last test |
+| Space t d | Debug nearest test (launches DAP) |
+| Space t o | Show test output |
+| Space t O | Toggle output panel |
+| Space t s | Toggle test summary sidebar |
+| Space t S | Stop running tests |
 
 ### Copy & Paste — system clipboard (LazyVim sets clipboard=unnamedplus)
 
