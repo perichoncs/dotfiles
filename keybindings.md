@@ -69,7 +69,7 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 
 | Keybinding | Action |
 |---|---|
-| Ctrl-Space, [ | Enter copy mode |
+| Ctrl-Space, [ | Enter copy mode, it also works with Glow |
 | v (in copy mode) | Begin visual selection |
 | V (in copy mode) | Begin line selection |
 | y (in copy mode) | Yank selection → system clipboard, exit copy mode |
