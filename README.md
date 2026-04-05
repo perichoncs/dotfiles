@@ -6,6 +6,7 @@ Personal development environment managed with [GNU Stow](https://www.gnu.org/sof
 
 | Category | Tools |
 |---|---|
+| **Shell** | Zsh + Oh My Zsh + Powerlevel10k + MesloLGS NF |
 | **Editor** | Neovim (LazyVim) |
 | **Terminal multiplexer** | tmux (prefix: `Ctrl-Space`) + TPM |
 | **Shell utilities** | zoxide, ripgrep, fd, eza, glow, jq, xclip |
@@ -37,10 +38,12 @@ git clone https://github.com/perichoncs/dotfiles.git ~/dotfiles \
 
 1. **Installs prerequisites** — ensures `git` and `curl` are present.
 2. **Clones this repo** to `~/dotfiles` (skipped if already there).
-3. **Installs every program** listed in `programs-installed.md` (Neovim, tmux, ripgrep, zoxide, fd, eza, glow, gh, jq, doppler, xclip, stow).
-4. **Symlinks configs** via `stow tmux` and `stow nvim` into `~/.tmux.conf` and `~/.config/nvim/`.
-5. **Installs TPM** (tmux plugin manager).
-6. Prints **next steps** you need to run manually.
+3. **Installs every program** listed in `programs-installed.md` (zsh, Neovim, tmux, ripgrep, zoxide, fd, eza, glow, gh, jq, doppler, xclip, stow).
+4. **Sets up Zsh** — Oh My Zsh, Powerlevel10k theme, zsh-autosuggestions, zsh-syntax-highlighting, and MesloLGS Nerd Font.
+5. **Symlinks configs** via `stow tmux`, `stow nvim`, and `stow zsh` into their home directory locations.
+6. **Installs TPM** (tmux plugin manager).
+7. **Sets zsh as default shell**.
+8. Prints **next steps** you need to run manually.
 
 ### After bootstrap — manual steps
 
@@ -56,9 +59,7 @@ nvim
 gh auth login                    # GitHub CLI
 doppler login                   # Doppler (if you use it)
 
-# 4. Enable zoxide in your shell (add to ~/.bashrc)
-echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
-source ~/.bashrc
+# 4. Set your terminal emulator font to "MesloLGS NF" for Powerlevel10k icons
 ```
 
 ## Example: brand-new AWS EC2 instance
@@ -87,13 +88,14 @@ ubuntu@ec2 $ cd ~/dotfiles && bash bootstrap.sh
 # [INFO]    2. Open nvim — LazyVim will auto-install plugins on first launch
 # [INFO]    3. Run 'gh auth login' to authenticate GitHub CLI
 # [INFO]    4. Run 'doppler login' to authenticate Doppler
-# [INFO]    5. Add to ~/.bashrc:  eval "$(zoxide init bash)"
+# [INFO]    5. Set your terminal font to 'MesloLGS NF' for Powerlevel10k icons
+# [INFO]    6. Start a new zsh session to activate Powerlevel10k
 
 ubuntu@ec2 $ tmux            # then Ctrl-Space + I to install plugins
 ubuntu@ec2 $ nvim             # LazyVim sets itself up automatically
 ```
 
-After those steps you have the full environment ready: tmux with custom keybindings, Neovim with LazyVim, and all CLI tools available.
+After those steps you have the full environment ready: zsh with Powerlevel10k, tmux with custom keybindings, Neovim with LazyVim, and all CLI tools available.
 
 ## Supported package managers
 
@@ -110,6 +112,9 @@ dotfiles/
 ├── bootstrap.sh             # automated setup script
 ├── programs-installed.md    # list of programs to install
 ├── keybindings.md           # full keybinding reference
+├── zsh/
+│   ├── .zshrc               # zsh config (stowed to ~/.zshrc)
+│   └── .p10k.zsh            # Powerlevel10k config (stowed to ~/.p10k.zsh)
 ├── tmux/
 │   └── .tmux.conf           # tmux config (stowed to ~/.tmux.conf)
 └── nvim/
@@ -120,7 +125,7 @@ dotfiles/
 
 ```bash
 # Re-link after editing configs
-cd ~/dotfiles && stow -R tmux nvim
+cd ~/dotfiles && stow -R tmux nvim zsh
 
 # Add a new stow package (e.g., bash)
 mkdir -p ~/dotfiles/bash

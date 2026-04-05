@@ -1,4 +1,5 @@
 ### Installed programs
+zsh
 tmux
 nvim
 zoxide

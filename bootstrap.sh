@@ -74,6 +74,7 @@ install_pkg() {
   local name="$1"
   case "$name" in
   nvim | neovim)
+    install_build_essentials
     install_neovim
     ;;
   gh)
@@ -106,6 +107,9 @@ install_pkg() {
   eza)
     install_eza
     ;;
+  zsh)
+    install_zsh
+    ;;
   xclip)
     pkg_install xclip
     ;;
@@ -127,6 +131,20 @@ pkg_install() {
 }
 
 # ── Special installers ────────────────────────────────────────
+
+install_build_essentials() {
+  if command_exists cc && command_exists make; then
+    ok "C compiler and make already installed"
+    return
+  fi
+  info "Installing C compiler (needed by Neovim Treesitter)..."
+  case "$PKG_MGR" in
+  apt) sudo apt-get install -y -qq build-essential ;;
+  dnf) sudo dnf groupinstall -y "Development Tools" ;;
+  pacman) sudo pacman -S --noconfirm base-devel ;;
+  esac
+  ok "C compiler installed"
+}
 
 install_neovim() {
   if command_exists nvim; then
@@ -221,6 +239,77 @@ install_glow() {
   ok "glow installed"
 }
 
+install_zsh() {
+  if command_exists zsh; then
+    ok "zsh already installed"
+  else
+    info "Installing zsh..."
+    pkg_install zsh
+    ok "zsh installed"
+  fi
+
+  # Install Oh My Zsh
+  if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    info "Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    ok "Oh My Zsh installed"
+  else
+    ok "Oh My Zsh already installed"
+  fi
+
+  # Install Powerlevel10k theme
+  local p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+  if [[ ! -d "$p10k_dir" ]]; then
+    info "Installing Powerlevel10k theme..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
+    ok "Powerlevel10k installed"
+  else
+    ok "Powerlevel10k already installed"
+  fi
+
+  # Install zsh-autosuggestions
+  local autosugg_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+  if [[ ! -d "$autosugg_dir" ]]; then
+    info "Installing zsh-autosuggestions..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$autosugg_dir"
+    ok "zsh-autosuggestions installed"
+  else
+    ok "zsh-autosuggestions already installed"
+  fi
+
+  # Install zsh-syntax-highlighting
+  local synhl_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+  if [[ ! -d "$synhl_dir" ]]; then
+    info "Installing zsh-syntax-highlighting..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$synhl_dir"
+    ok "zsh-syntax-highlighting installed"
+  else
+    ok "zsh-syntax-highlighting already installed"
+  fi
+
+  # Install MesloLGS Nerd Font (recommended for Powerlevel10k)
+  install_meslo_nerd_font
+}
+
+install_meslo_nerd_font() {
+  local font_dir="$HOME/.local/share/fonts"
+  if fc-list 2>/dev/null | grep -qi "MesloLGS Nerd Font"; then
+    ok "MesloLGS Nerd Font already installed"
+    return
+  fi
+  info "Installing MesloLGS Nerd Font (Powerlevel10k recommended font)..."
+  mkdir -p "$font_dir"
+  local base_url="https://github.com/romkatv/powerlevel10k-media/raw/master"
+  curl -fsSLo "$font_dir/MesloLGS NF Regular.ttf"     "$base_url/MesloLGS%20NF%20Regular.ttf"
+  curl -fsSLo "$font_dir/MesloLGS NF Bold.ttf"        "$base_url/MesloLGS%20NF%20Bold.ttf"
+  curl -fsSLo "$font_dir/MesloLGS NF Italic.ttf"      "$base_url/MesloLGS%20NF%20Italic.ttf"
+  curl -fsSLo "$font_dir/MesloLGS NF Bold Italic.ttf" "$base_url/MesloLGS%20NF%20Bold%20Italic.ttf"
+  if command_exists fc-cache; then
+    fc-cache -f "$font_dir"
+  fi
+  ok "MesloLGS Nerd Font installed"
+}
+
 install_eza() {
   if command_exists eza; then
     ok "eza already installed"
@@ -282,10 +371,13 @@ cd "$DOTFILES_DIR"
 # Remove existing targets if they're real files/dirs (not symlinks)
 [[ -f "$HOME/.tmux.conf" && ! -L "$HOME/.tmux.conf" ]] && mv "$HOME/.tmux.conf" "$HOME/.tmux.conf.bak"
 [[ -d "$HOME/.config/nvim" && ! -L "$HOME/.config/nvim" ]] && mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak"
+[[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]] && mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
+[[ -f "$HOME/.p10k.zsh" && ! -L "$HOME/.p10k.zsh" ]] && mv "$HOME/.p10k.zsh" "$HOME/.p10k.zsh.bak"
 
 mkdir -p "$HOME/.config"
 stow tmux
 stow nvim
+stow zsh
 ok "Dotfiles linked"
 
 # ── Install tmux plugin manager (TPM) ────────────────────────
@@ -295,6 +387,22 @@ if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
   ok "TPM installed — open tmux and press prefix+I to install plugins"
 else
   ok "TPM already installed"
+fi
+
+# ── Set zsh as default shell ─────────────────────────────────
+if command_exists zsh; then
+  current_shell="$(basename "$SHELL")"
+  if [[ "$current_shell" != "zsh" ]]; then
+    info "Setting zsh as default shell..."
+    zsh_path="$(which zsh)"
+    if grep -qF "$zsh_path" /etc/shells; then
+      chsh -s "$zsh_path" || warn "Could not change default shell — run: chsh -s $zsh_path"
+    else
+      warn "zsh not in /etc/shells — run: sudo sh -c 'echo $zsh_path >> /etc/shells' && chsh -s $zsh_path"
+    fi
+  else
+    ok "zsh is already the default shell"
+  fi
 fi
 
 # ── Post-install summary ─────────────────────────────────────
@@ -308,6 +416,6 @@ info "  1. Open tmux and press Ctrl-Space + I to install tmux plugins"
 info "  2. Open nvim — LazyVim will auto-install plugins on first launch"
 info "  3. Run 'gh auth login' to authenticate GitHub CLI"
 info "  4. Run 'doppler login' to authenticate Doppler"
-info "  5. Add to ~/.bashrc or ~/.zshrc:"
-info "       eval \"\$(zoxide init bash)\"   # or zsh"
+info "  5. Set your terminal font to 'MesloLGS NF' for Powerlevel10k icons"
+info "  6. Start a new zsh session to activate Powerlevel10k"
 echo ""

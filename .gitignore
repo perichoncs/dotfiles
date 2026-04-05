@@ -25,3 +25,6 @@ nvim/.config/nvim/undodir/
 
 # Stow conflicts backup
 *.bak
+
+# Zsh history
+.zsh_history
