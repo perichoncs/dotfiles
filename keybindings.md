@@ -148,7 +148,28 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Space c a | Code actions |
 | Space c r | Rename symbol |
 | Space c d | Line diagnostics |
-| [ d / ] d | Previous/next diagnostic |
+| [ d / ] d | Previous/next diagnostic (any severity) |
+| [ e / ] e | Previous/next **error** |
+| [ w / ] w | Previous/next **warning** |
+
+### Multi-cursor (vim-visual-multi — like GoLand Alt+J / VS Code Ctrl+D)
+
+| Keybinding | Action |
+|---|---|
+| Ctrl-n (Normal) | Select word under cursor, enter multi-cursor mode |
+| Ctrl-n (Visual) | Add cursor at next occurrence of current selection |
+| Ctrl-x | Skip current occurrence (move to next without adding cursor) |
+| Ctrl-p | Remove last added cursor |
+| Space m a | Select ALL occurrences at once |
+| Esc | Exit multi-cursor mode |
+
+> **Workflow:** In Normal mode, place cursor on a word and press `Ctrl-n` to select it.
+> Keep pressing `Ctrl-n` to add a cursor at each next occurrence. Then type to edit all at once.
+> Use `Ctrl-x` to skip an occurrence you don't want to edit.
+>
+> **Why not Ctrl-L?** `Ctrl-L` is bound to "move to right pane" (vim-tmux-navigator) and cannot be remapped. `Ctrl-n` is the equivalent standard key in Neovim multi-cursor plugins.
+
+---
 
 ### Go Tooling (Space c g — only in Go files)
 
