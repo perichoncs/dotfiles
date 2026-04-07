@@ -70,7 +70,7 @@ return {
 
   -- 3. Ensure Mason installs the necessary binary
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
         "yaml-language-server",
