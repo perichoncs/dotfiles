@@ -113,6 +113,27 @@ install_pkg() {
   xclip)
     pkg_install xclip
     ;;
+  ruff)
+    install_ruff
+    ;;
+  lazygit)
+    install_lazygit
+    ;;
+  bat)
+    install_bat
+    ;;
+  fzf)
+    install_fzf
+    ;;
+  go)
+    install_go
+    ;;
+  rust)
+    install_rust
+    ;;
+  python3)
+    install_python3
+    ;;
   *)
     pkg_install "$name"
     ;;
@@ -329,6 +350,114 @@ install_eza() {
   pacman) sudo pacman -S --noconfirm eza ;;
   esac
   ok "eza installed"
+}
+
+install_ruff() {
+  if command_exists ruff; then
+    ok "ruff already installed"
+    return
+  fi
+  info "Installing ruff (Python linter/formatter)..."
+  if command_exists pip3; then
+    pip3 install --user ruff
+  elif command_exists pip; then
+    pip install --user ruff
+  else
+    warn "pip not found — installing python3-pip first"
+    pkg_install python3-pip
+    pip3 install --user ruff
+  fi
+  ok "ruff installed"
+}
+
+install_lazygit() {
+  if command_exists lazygit; then
+    ok "lazygit already installed"
+    return
+  fi
+  info "Installing lazygit..."
+  local version
+  version=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+  curl -fsSLo /tmp/lazygit.tar.gz \
+    "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${version}_Linux_x86_64.tar.gz"
+  tar -C /tmp -xzf /tmp/lazygit.tar.gz lazygit
+  sudo install /tmp/lazygit /usr/local/bin/lazygit
+  rm -f /tmp/lazygit /tmp/lazygit.tar.gz
+  ok "lazygit installed"
+}
+
+install_bat() {
+  if command_exists bat || command_exists batcat; then
+    ok "bat already installed"
+    return
+  fi
+  info "Installing bat..."
+  case "$PKG_MGR" in
+  apt) sudo apt-get install -y -qq bat ;;
+  dnf) sudo dnf install -y bat ;;
+  pacman) sudo pacman -S --noconfirm bat ;;
+  esac
+  # On Debian/Ubuntu the binary is "batcat", create a symlink
+  if command_exists batcat && ! command_exists bat; then
+    sudo ln -sf "$(which batcat)" /usr/local/bin/bat
+  fi
+  ok "bat installed"
+}
+
+install_fzf() {
+  if command_exists fzf; then
+    ok "fzf already installed"
+    return
+  fi
+  info "Installing fzf..."
+  case "$PKG_MGR" in
+  apt) sudo apt-get install -y -qq fzf ;;
+  dnf) sudo dnf install -y fzf ;;
+  pacman) sudo pacman -S --noconfirm fzf ;;
+  esac
+  ok "fzf installed"
+}
+
+install_go() {
+  if command_exists go; then
+    ok "Go already installed"
+    return
+  fi
+  info "Installing Go (latest stable)..."
+  local go_version
+  go_version=$(curl -fsSL "https://go.dev/VERSION?m=text" | head -1)
+  curl -fsSLo /tmp/go.tar.gz "https://go.dev/dl/${go_version}.linux-amd64.tar.gz"
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+  rm -f /tmp/go.tar.gz
+  ok "Go ${go_version} installed to /usr/local/go"
+}
+
+install_rust() {
+  if command_exists rustc; then
+    ok "Rust already installed"
+    return
+  fi
+  info "Installing Rust via rustup..."
+  curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs | sh -s -- -y
+  # Source cargo env for the rest of this script
+  # shellcheck disable=SC1091
+  [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+  ok "Rust installed (rustc, cargo, rustup)"
+}
+
+install_python3() {
+  if command_exists python3; then
+    ok "python3 already installed"
+    return
+  fi
+  info "Installing python3..."
+  case "$PKG_MGR" in
+  apt) sudo apt-get install -y -qq python3 python3-pip python3-venv ;;
+  dnf) sudo dnf install -y python3 python3-pip ;;
+  pacman) sudo pacman -S --noconfirm python python-pip ;;
+  esac
+  ok "python3 installed"
 }
 
 # ── Parse programs-installed.md ───────────────────────────────

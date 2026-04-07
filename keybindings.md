@@ -85,6 +85,15 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Ctrl-Space, I | Install TPM plugins |
 | Ctrl-Space, U | Update TPM plugins |
 
+### Session Persistence (resurrect + continuum)
+
+| Keybinding | Action |
+|---|---|
+| Ctrl-Space, Ctrl-s | Save tmux session (resurrect) |
+| Ctrl-Space, Ctrl-r | Restore last saved session (resurrect) |
+| *(automatic)* | Continuum auto-saves every 15 min |
+| *(automatic)* | Continuum auto-restores on tmux start |
+
 ---
 
 ## LazyVim / Neovim (leader: Space)
@@ -139,7 +148,28 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Space c a | Code actions |
 | Space c r | Rename symbol |
 | Space c d | Line diagnostics |
-| [ d / ] d | Previous/next diagnostic |
+| [ d / ] d | Previous/next diagnostic (any severity) |
+| [ e / ] e | Previous/next **error** |
+| [ w / ] w | Previous/next **warning** |
+
+### Multi-cursor (vim-visual-multi — like GoLand Alt+J / VS Code Ctrl+D)
+
+| Keybinding | Action |
+|---|---|
+| Ctrl-n (Normal) | Select word under cursor, enter multi-cursor mode |
+| Ctrl-n (Visual) | Add cursor at next occurrence of current selection |
+| Ctrl-x | Skip current occurrence (move to next without adding cursor) |
+| Ctrl-p | Remove last added cursor |
+| Space m a | Select ALL occurrences at once |
+| Esc | Exit multi-cursor mode |
+
+> **Workflow:** In Normal mode, place cursor on a word and press `Ctrl-n` to select it.
+> Keep pressing `Ctrl-n` to add a cursor at each next occurrence. Then type to edit all at once.
+> Use `Ctrl-x` to skip an occurrence you don't want to edit.
+>
+> **Why not Ctrl-L?** `Ctrl-L` is bound to "move to right pane" (vim-tmux-navigator) and cannot be remapped. `Ctrl-n` is the equivalent standard key in Neovim multi-cursor plugins.
+
+---
 
 ### Go Tooling (Space c g — only in Go files)
 
@@ -154,6 +184,22 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Space c g p | :GoTest | Run tests for entire package |
 
 > **Mnemonic:** `c` = code, `g` = go, then: `s`truct, `e`rr, `a`dd tag, `r`emove tag, `i`mpl, `f`unc test, `p`ackage test.
+
+### Rust Tooling (via rust-analyzer — automatic in Rust files)
+
+| Keybinding | Action |
+|---|---|
+| g d | Go to definition |
+| g r | Go to references |
+| K | Hover documentation (shows type info, docs) |
+| Space c a | Code actions (auto-import, fill match arms, etc.) |
+| Space c r | Rename symbol |
+| J (visual, join) | Join lines (useful for collapsing match arms) |
+| Space d b | Toggle breakpoint |
+| Space d c | Start/continue debug (via codelldb) |
+
+> **Note:** Rust uses the standard LSP keybindings from LazyVim — no custom prefix needed.
+> rust-analyzer provides code actions like auto-import, fill match arms, unwrap Result, and more via `Space c a`.
 
 ### Debugging (Space d — via nvim-dap + delve)
 

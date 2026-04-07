@@ -73,7 +73,9 @@ map("v", ">", ">gv", { desc = "Indent and keep selection" })
 --   <Space>ca       → code actions
 --   <Space>cr       → rename symbol
 --   <Space>cd       → show line diagnostics
---   [d / ]d         → previous / next diagnostic
+--   [d / ]d         → previous / next diagnostic (any severity)
+--   [e / ]e         → previous / next ERROR
+--   [w / ]w         → previous / next WARNING
 
 -- Git (LazyGit + Gitsigns)
 --   <Space>gg       → open LazyGit UI
