@@ -12,3 +12,10 @@ jq
 stow
 doppler
 xclip
+ruff
+lazygit
+bat
+fzf
+go
+rust
+python3

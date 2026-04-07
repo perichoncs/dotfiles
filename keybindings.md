@@ -85,6 +85,15 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Ctrl-Space, I | Install TPM plugins |
 | Ctrl-Space, U | Update TPM plugins |
 
+### Session Persistence (resurrect + continuum)
+
+| Keybinding | Action |
+|---|---|
+| Ctrl-Space, Ctrl-s | Save tmux session (resurrect) |
+| Ctrl-Space, Ctrl-r | Restore last saved session (resurrect) |
+| *(automatic)* | Continuum auto-saves every 15 min |
+| *(automatic)* | Continuum auto-restores on tmux start |
+
 ---
 
 ## LazyVim / Neovim (leader: Space)
@@ -154,6 +163,22 @@ Environment: **Cosmic DE** + **tmux** (prefix: `Ctrl-Space`) + **LazyVim** (lead
 | Space c g p | :GoTest | Run tests for entire package |
 
 > **Mnemonic:** `c` = code, `g` = go, then: `s`truct, `e`rr, `a`dd tag, `r`emove tag, `i`mpl, `f`unc test, `p`ackage test.
+
+### Rust Tooling (via rust-analyzer — automatic in Rust files)
+
+| Keybinding | Action |
+|---|---|
+| g d | Go to definition |
+| g r | Go to references |
+| K | Hover documentation (shows type info, docs) |
+| Space c a | Code actions (auto-import, fill match arms, etc.) |
+| Space c r | Rename symbol |
+| J (visual, join) | Join lines (useful for collapsing match arms) |
+| Space d b | Toggle breakpoint |
+| Space d c | Start/continue debug (via codelldb) |
+
+> **Note:** Rust uses the standard LSP keybindings from LazyVim — no custom prefix needed.
+> rust-analyzer provides code actions like auto-import, fill match arms, unwrap Result, and more via `Space c a`.
 
 ### Debugging (Space d — via nvim-dap + delve)
 

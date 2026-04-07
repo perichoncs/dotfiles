@@ -1,8 +1,10 @@
 return {
   -- 1. Enable the "Golden Stack" Extras
   { import = "lazyvim.plugins.extras.lang.go" },
+  { import = "lazyvim.plugins.extras.lang.rust" },
   { import = "lazyvim.plugins.extras.lang.python" },
   { import = "lazyvim.plugins.extras.lang.yaml" },
+  { import = "lazyvim.plugins.extras.lang.toml" },
   { import = "lazyvim.plugins.extras.lang.docker" },
   { import = "lazyvim.plugins.extras.dap.core" },
   { import = "lazyvim.plugins.extras.test.core" },
@@ -68,13 +70,15 @@ return {
 
   -- 3. Ensure Mason installs the necessary binary
   {
-    "mason-org/mason.nvim",
+    "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
         "yaml-language-server",
         "gopls",
         "delve",
         "basedpyright",
+        "ruff",
+        "rust-analyzer",
         "dockerfile-language-server",
       },
     },
