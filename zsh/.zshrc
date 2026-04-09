@@ -143,3 +143,8 @@ alias code="flatpak run com.visualstudio.code"
 alias ls="eza --icons --grid --group-directories-first"
 alias cd="z"
 
+
+. "$HOME/.local/share/../bin/env"
+
+# opencode
+export PATH=/home/sebas/.opencode/bin:$PATH
