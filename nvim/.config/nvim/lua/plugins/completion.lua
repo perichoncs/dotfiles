@@ -8,7 +8,7 @@ return {
       keymap = {
         preset = "default",
         ["<CR>"] = { "accept", "fallback" }, -- accept only, no newline passthrough
-        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+        ["<Tab>"] = { "accept", "snippet_forward", "fallback" },
         ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
       },
     },
