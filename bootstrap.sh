@@ -359,13 +359,13 @@ install_ruff() {
   fi
   info "Installing ruff (Python linter/formatter)..."
   if command_exists pip3; then
-    pip3 install --user ruff
+    pip3 install --user ruff || { warn "Failed to install ruff via pip3 — skipping"; return; }
   elif command_exists pip; then
-    pip install --user ruff
+    pip install --user ruff || { warn "Failed to install ruff via pip — skipping"; return; }
   else
     warn "pip not found — installing python3-pip first"
-    pkg_install python3-pip
-    pip3 install --user ruff
+    pkg_install python3-pip || { warn "Failed to install python3-pip — skipping ruff"; return; }
+    pip3 install --user ruff || { warn "Failed to install ruff via pip3 — skipping"; return; }
   fi
   ok "ruff installed"
 }

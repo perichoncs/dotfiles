@@ -8,8 +8,21 @@ return {
       keymap = {
         preset = "default",
         ["<CR>"] = { "accept", "fallback" }, -- accept only, no newline passthrough
-        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+        ["<Tab>"] = { "snippet_forward", "fallback" },
         ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+      },
+    },
+  },
+
+  -- Disable LSP progress messages (e.g. "✓ pyright") that appear on every keypress.
+  -- Diagnostics (errors, warnings) are NOT affected — only the status ticker is hidden.
+  {
+    "folke/noice.nvim",
+    opts = {
+      lsp = {
+        progress = {
+          enabled = false,
+        },
       },
     },
   },

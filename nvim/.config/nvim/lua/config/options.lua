@@ -6,3 +6,5 @@
 -- are not mis-interpreted as Alt+j/k (which would move lines up/down).
 -- Without this, pressing <Esc> quickly followed by j/k triggers <A-j>/<A-k>.
 vim.opt.ttimeoutlen = 0
+
+

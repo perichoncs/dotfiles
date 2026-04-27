@@ -148,3 +148,4 @@ alias cd="z"
 
 # opencode
 export PATH=/home/sebas/.opencode/bin:$PATH
+export PATH="$PATH:/home/sebas/Downloads/GoLand/bin"
