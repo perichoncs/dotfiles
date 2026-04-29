@@ -86,5 +86,17 @@ map("v", ">", ">gv", { desc = "Indent and keep selection" })
 --   Ctrl-/          → toggle floating terminal
 --   Ctrl-\ Ctrl-n   → exit terminal insert mode (back to Normal)
 
+-- OpenCode (AI coding assistant)
+--   Ctrl-a          → ask opencode about current context (visual mode sends selection)
+--   Ctrl-x          → execute an opencode action
+--   Ctrl-.          → toggle opencode panel
+--   go              → send motion range to opencode (e.g. goiw = inner word)
+--   goo             → send current line to opencode
+--   Shift-Ctrl-u    → scroll opencode up half a page
+--   Shift-Ctrl-d    → scroll opencode down half a page
+--   Alt-a           → send selected picker item to opencode (snacks.nvim picker)
+--   +               → increment number under cursor (remapped from Ctrl-a)
+--   -               → decrement number under cursor (remapped from Ctrl-x)
+
 -- Plugin Manager
 --   <Space>l        → open Lazy plugin manager
